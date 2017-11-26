@@ -31,7 +31,8 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Register2Activity" />
         <activity android:name=".Register3Activity" />
-        <activity android:name=".AgregarProductoActivity"></activity>
+        <activity android:name=".AgregarProductoActivity" />
+        <activity android:name=".AgregarPromocionActivity"></activity>
     </application>
 
 </manifest>

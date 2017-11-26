@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,57 +22,53 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-public class AgregarProductoActivity extends AppCompatActivity {
-    private EditText eNombreProducto, eMarca, ePrecio, eCantidad;
+public class AgregarPromocionActivity extends AppCompatActivity {
+    private EditText eNombreProducto, eMarca, ePrecioAntes, ePrecioAhora , eCantidad;
     private ImageView imagenProducto;
     private StorageReference mStorage;
     private String Celular;
     private Uri foto;
-    private NuevoProducto nuevoProducto;
+    private NuevaPromo nuevaPromo;
     private static final int GALLERY_INTENT=1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_producto);
-
+        setContentView(R.layout.activity_agregar_promocion);
         ActionBar ab =getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
         eNombreProducto=(EditText)findViewById(R.id.eNombreProducto);
         eMarca = (EditText)findViewById(R.id.eMarca);
-        ePrecio =(EditText)findViewById(R.id.ePrecio);
+        ePrecioAntes =(EditText)findViewById(R.id.ePrecioAntes);
+        ePrecioAhora =(EditText)findViewById(R.id.ePrecioAhora);
         eCantidad=(EditText)findViewById(R.id.eCantidad);
         imagenProducto=(ImageView)findViewById(R.id.imagenProducto);
 
         mStorage = FirebaseStorage.getInstance().getReference();
 
-
-
-
-
         SharedPreferences sharedPrefs = getSharedPreferences("SharedPreferencesVentas", this.MODE_PRIVATE);
         Celular = sharedPrefs.getString("Celular", "no_cargo_celular");
     }
-
     public void addProducto(View view) {
         if(eNombreProducto.getText().toString().isEmpty()){eNombreProducto.setError("Complete this field");return;}
         if(eMarca.getText().toString().isEmpty()){eMarca.setError("Complete this field");return;}
-        if(ePrecio.getText().toString().isEmpty()){ePrecio.setError("Complete this field");return;}
+        if(ePrecioAntes.getText().toString().isEmpty()){ePrecioAntes.setError("Complete this field");return;}
+        if(ePrecioAhora.getText().toString().isEmpty()){ePrecioAhora.setError("Complete this field");return;}
         if(eCantidad.getText().toString().isEmpty()){eCantidad.setError("Complete this field");return;}
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Productos").child(Celular).child(eNombreProducto.getText().toString());
+        DatabaseReference myRef = database.getReference("Promociones").child(Celular).child(eNombreProducto.getText().toString());
 
-        nuevoProducto=new NuevoProducto(eMarca.getText().toString(), eNombreProducto.getText().toString(),
-                                        ePrecio.getText().toString(), eCantidad.getText().toString(),foto.toString());
-        myRef.setValue(nuevoProducto);
+        nuevaPromo=new NuevaPromo(foto.toString(),eMarca.getText().toString(), eNombreProducto.getText().toString(),ePrecioAhora.getText().toString(),
+                ePrecioAntes.getText().toString(), eCantidad.getText().toString());
+        myRef.setValue(nuevaPromo);
         eMarca.setText("");
         eNombreProducto.setText("");
-        ePrecio.setText("");
+        ePrecioAntes.setText("");
+        ePrecioAhora.setText("");
         eCantidad.setText("");
         imagenProducto.setImageResource(R.drawable.ic_image_black_24dp);
-        Toast.makeText(AgregarProductoActivity.this, "Producto Agregado Exitosamente", Toast.LENGTH_SHORT).show();
+        Toast.makeText(AgregarPromocionActivity.this, "Promoción Agregada Exitosamente", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -82,16 +77,16 @@ public class AgregarProductoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
             Uri uri = data.getData();
-            StorageReference filePath = mStorage.child("fotosproductos").child(Celular).child(eNombreProducto.getText().toString());
-            Toast.makeText(AgregarProductoActivity.this, "Subiendo imagen ...", Toast.LENGTH_SHORT).show();
+            StorageReference filePath = mStorage.child("fotospromociones").child(Celular).child(eNombreProducto.getText().toString());
+            Toast.makeText(AgregarPromocionActivity.this, "Subiendo imagen ...", Toast.LENGTH_SHORT).show();
             filePath.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Uri urlFotoProducto = taskSnapshot.getDownloadUrl();
                             foto=urlFotoProducto;
-                            Toast.makeText(AgregarProductoActivity.this, "Subida exitosa", Toast.LENGTH_SHORT).show();
-                            Glide.with(AgregarProductoActivity.this)
+                            Toast.makeText(AgregarPromocionActivity.this, "Subida exitosa", Toast.LENGTH_SHORT).show();
+                            Glide.with(AgregarPromocionActivity.this)
                                     .load(urlFotoProducto)
                                     .fitCenter()
                                     .centerCrop()
@@ -101,7 +96,7 @@ public class AgregarProductoActivity extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(AgregarProductoActivity.this, "Subida fallo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AgregarPromocionActivity.this, "Subida fallo", Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -122,3 +117,5 @@ public class AgregarProductoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+

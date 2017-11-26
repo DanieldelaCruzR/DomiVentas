@@ -65,6 +65,15 @@ public class Register3Activity extends AppCompatActivity {
             }
         });
 
+        imagenNegocio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent,GALLERY_INTENT);
+            }
+        });
+
 
     }
 
@@ -104,17 +113,21 @@ public class Register3Activity extends AppCompatActivity {
 
     public void bRegister(View view) {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Tiendas").child(Celular);
+        if(eCostoEnvio.getText().toString().isEmpty()){eCostoEnvio.setError("Complete this field");return;}
+        if(ePedidoMin.getText().toString().isEmpty()){ePedidoMin.setError("Complete this field");return;}
+        if(eTiempoEnvio.getText().toString().isEmpty()){eTiempoEnvio.setError("Complete this field");return;}
+
         SharedPreferences sharedPrefs = getSharedPreferences("SharedPreferencesVentas", this.MODE_PRIVATE);
         SharedPreferences.Editor editorSP= sharedPrefs.edit();
-
-        nuevoUsuario=new NuevoUsuario(Email, Nombre, Propietario, Direccion, foto.toString(), Celular, Tipo, eCostoEnvio.getText().toString(), ePedidoMin.getText().toString(), eTiempoEnvio.getText().toString());
-        myRef.setValue(nuevoUsuario);
-        Intent intent = new Intent(Register3Activity.this,NavDrawerActivity.class);
         editorSP.putString("Celular",Celular);
         editorSP.commit();
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Tiendas").child(Celular);
+
+        nuevoUsuario=new NuevoUsuario(Email, Nombre, Propietario, Direccion, foto.toString(), Celular, Tipo, eCostoEnvio.getText().toString(), ePedidoMin.getText().toString(), eTiempoEnvio.getText().toString());
+        myRef.setValue(nuevoUsuario);
+        Intent intent = new Intent(Register3Activity.this,LoginActivity.class);
         startActivity(intent);
         finish();
     }
