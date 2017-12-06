@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -116,10 +117,11 @@ public class Register3Activity extends AppCompatActivity {
         if(eCostoEnvio.getText().toString().isEmpty()){eCostoEnvio.setError("Complete this field");return;}
         if(ePedidoMin.getText().toString().isEmpty()){ePedidoMin.setError("Complete this field");return;}
         if(eTiempoEnvio.getText().toString().isEmpty()){eTiempoEnvio.setError("Complete this field");return;}
-
+        int optLog = 0;
         SharedPreferences sharedPrefs = getSharedPreferences("SharedPreferencesVentas", this.MODE_PRIVATE);
         SharedPreferences.Editor editorSP= sharedPrefs.edit();
         editorSP.putString("Celular",Celular);
+        editorSP.putInt("optLog",optLog);
         editorSP.commit();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -127,6 +129,8 @@ public class Register3Activity extends AppCompatActivity {
 
         nuevoUsuario=new NuevoUsuario(Email, Nombre, Propietario, Direccion, foto.toString(), Celular, Tipo, eCostoEnvio.getText().toString(), ePedidoMin.getText().toString(), eTiempoEnvio.getText().toString());
         myRef.setValue(nuevoUsuario);
+        FirebaseAuth.getInstance().signOut();
+
         Intent intent = new Intent(Register3Activity.this,LoginActivity.class);
         startActivity(intent);
         finish();
