@@ -141,11 +141,11 @@ public class PedidoActivity extends AppCompatActivity {
     }
     public void bOk(View view){
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Pedidos_Cliente2").child(ClienteId).
-                child(Celular);//.child(numeroPedido);
+        DatabaseReference myRef = database.getReference("Pedidos_Cliente").child(ClienteId).
+                child(Celular).child(numeroPedido);
         myRef.removeValue();
-        myRef = database.getReference("Pedidos_Tienda2").child(Celular).
-                child(ClienteId);//.child(numeroPedido);
+        myRef = database.getReference("Pedidos_Tienda").child(Celular).
+                child(ClienteId).child(numeroPedido);
         myRef.removeValue();
         startActivity(intent);
         finish();

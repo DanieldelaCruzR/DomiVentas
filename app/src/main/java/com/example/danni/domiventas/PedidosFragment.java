@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +86,7 @@ public class PedidosFragment extends Fragment {
                         //Poner Numero de pedido TAMBIEN
                         pedidos_generales.add(new Pedido_Usuario(padre.getKey(),cantidades,totales,hijito.getKey()));
                     }
-                    }
+                }
 
                 adapter.notifyDataSetChanged();
             }
@@ -95,6 +96,8 @@ public class PedidosFragment extends Fragment {
 
             }
         });
+
+
         listaProdAgrupados.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -107,6 +110,7 @@ public class PedidosFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
+
 
         return view; 
     }
@@ -135,3 +139,37 @@ public class PedidosFragment extends Fragment {
     }
 
 }
+
+
+/* database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Pedidos_Tienda").child(Celular);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot padre : dataSnapshot.getChildren()){
+                    for(DataSnapshot hijito : padre.getChildren()){
+                        pedido_usuario.clear();
+                        int cantidadTotal=0, precioTotal=0;
+                        for(DataSnapshot hijo: hijito.getChildren()){
+                            pedido_usuario.add(hijo.getValue(Pedido_Usuario.class));
+                        }
+                        for(int i=0;i<pedido_usuario.size();i++) {
+                            cantidadTotal+=Integer.valueOf(pedido_usuario.get(i).getCantidad());
+                            precioTotal+=Integer.valueOf(pedido_usuario.get(i).getTotal());
+                        }
+                        String totales = Integer.toString(precioTotal);
+                        String cantidades = Integer.toString(cantidadTotal);
+                        //Poner Numero de pedido TAMBIEN
+                        pedidos_generales.add(new Pedido_Usuario(padre.getKey(),cantidades,totales,hijito.getKey()));
+                    }
+                    }
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
