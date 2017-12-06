@@ -64,26 +64,29 @@ public class PedidosFragment extends Fragment {
         listaProdAgrupados.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Pedidos_Tienda2").child(Celular);
+        DatabaseReference myRef = database.getReference("Pedidos_Tienda").child(Celular);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot padre : dataSnapshot.getChildren()){
-                    pedido_usuario.clear();
-                    int cantidadTotal=0, precioTotal=0;
-                    for(DataSnapshot hijo: padre.getChildren()){
-                        pedido_usuario.add(hijo.getValue(Pedido_Usuario.class));
+                    for(DataSnapshot hijito : padre.getChildren()){
+                        pedido_usuario.clear();
+                        int cantidadTotal=0, precioTotal=0;
+                        for(DataSnapshot hijo: hijito.getChildren()){
+                            pedido_usuario.add(hijo.getValue(Pedido_Usuario.class));
+                        }
+                        for(int i=0;i<pedido_usuario.size();i++) {
+                            cantidadTotal+=Integer.valueOf(pedido_usuario.get(i).getCantidad());
+                            precioTotal+=Integer.valueOf(pedido_usuario.get(i).getTotal());
+                        }
+                        String totales = Integer.toString(precioTotal);
+                        String cantidades = Integer.toString(cantidadTotal);
+                        //Poner Numero de pedido TAMBIEN
+                        pedidos_generales.add(new Pedido_Usuario(padre.getKey(),cantidades,totales,hijito.getKey()));
                     }
-                    for(int i=0;i<pedido_usuario.size();i++) {
-                        cantidadTotal+=Integer.valueOf(pedido_usuario.get(i).getCantidad());
-                        precioTotal+=Integer.valueOf(pedido_usuario.get(i).getTotal());
                     }
-                    String totales = Integer.toString(precioTotal);
-                    String cantidades = Integer.toString(cantidadTotal);
-                    //Poner Numero de pedido TAMBIEN
-                    pedidos_generales.add(new Pedido_Usuario(padre.getKey(),cantidades,totales));
-                }
+
                 adapter.notifyDataSetChanged();
             }
 
@@ -99,6 +102,8 @@ public class PedidosFragment extends Fragment {
                 intent.putExtra("ClienteId",pedidos_generales.get(i).getNombre());
                 intent.putExtra("Items",pedidos_generales.get(i).getCantidad());
                 intent.putExtra("Total",pedidos_generales.get(i).getTotal());
+                intent.putExtra("Pedido",pedidos_generales.get(i).getPedido());
+
                 getActivity().startActivity(intent);
             }
         });

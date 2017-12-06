@@ -47,11 +47,12 @@ public class PedidoActivity extends AppCompatActivity {
         ClienteId = extras.getString("ClienteId");
         Items = extras.getString("Items");
         Total = extras.getString("Total");
+        numeroPedido=extras.getString("Pedido");
 
         TextView tNumPedido =(TextView)findViewById(R.id.tNumPedido);
         TextView tItems = (TextView)findViewById(R.id.tItemsPedido);
         TextView tTotalPedido = (TextView)findViewById(R.id.tTotalPedido);
-        numeroPedido="2";
+
         tNumPedido.setText(numeroPedido);
         tItems.setText(Items);
         tTotalPedido.setText(Total);
@@ -69,7 +70,7 @@ public class PedidoActivity extends AppCompatActivity {
         listaPedido.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Pedidos_Tienda2").child(Celular).child(ClienteId); //.child(numeroPedido);
+        DatabaseReference myRef = database.getReference("Pedidos_Tienda").child(Celular).child(ClienteId).child(numeroPedido);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

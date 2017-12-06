@@ -8,6 +8,8 @@ public class Pedido_Usuario {
     private String Nombre;
     private String Cantidad;
     private String Total;
+    private String Pedido;
+
     public String getNombre() {
         return Nombre;
     }
@@ -36,12 +38,19 @@ public class Pedido_Usuario {
 
     }
 
-    public Pedido_Usuario(String nombre, String cantidad, String total) {
+    public String getPedido() {
+        return Pedido;
+    }
+
+    public void setPedido(String pedido) {
+        Pedido = pedido;
+    }
+
+    public Pedido_Usuario(String nombre, String cantidad, String total, String pedido) {
 
         Nombre = nombre;
         Cantidad = cantidad;
         Total = total;
+        Pedido = pedido;
     }
-
-
 }

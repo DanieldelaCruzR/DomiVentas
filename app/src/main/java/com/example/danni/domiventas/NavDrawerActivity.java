@@ -184,7 +184,7 @@ public class NavDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_perfil) {
             fragmentManager.beginTransaction().replace(R.id.contenedorMain,new PerfilFragment()).commit();
         } else if (id == R.id.nav_informacion) {
-          //  fragmentManager.beginTransaction().replace(R.id.contenedorMain,new InformacionFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.contenedorMain,new AcercaFragment()).commit();
         } else if (id == R.id.nav_close) {
             FirebaseAuth.getInstance().signOut();
             SharedPreferences sharedPrefs = getSharedPreferences("SharedPreferencesVentas", this.MODE_PRIVATE);

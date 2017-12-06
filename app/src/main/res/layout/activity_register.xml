@@ -64,7 +64,7 @@
         android:drawablePadding="12dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="@string/confirmpass"
+        android:hint="Confirme Contraseña"
         android:inputType="textPassword"
         android:maxLines="1"
         android:padding="8dp"
