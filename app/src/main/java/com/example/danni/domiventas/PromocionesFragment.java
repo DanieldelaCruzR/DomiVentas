@@ -40,6 +40,7 @@ public class PromocionesFragment extends Fragment {
     private StorageReference storageRef;
     private String Celular;
 
+
     public PromocionesFragment() {
         // Required empty public constructor
     }

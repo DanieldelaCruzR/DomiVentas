@@ -16,8 +16,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -29,6 +32,7 @@ public class AgregarPromocionActivity extends AppCompatActivity {
     private String Celular;
     private Uri foto;
     private NuevaPromo nuevaPromo;
+    private PromoGeneral promoGeneral;
     private static final int GALLERY_INTENT=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +65,42 @@ public class AgregarPromocionActivity extends AppCompatActivity {
 
         nuevaPromo=new NuevaPromo(foto.toString(),eMarca.getText().toString(), eNombreProducto.getText().toString(),ePrecioAhora.getText().toString(),
                 ePrecioAntes.getText().toString(), eCantidad.getText().toString());
+
         myRef.setValue(nuevaPromo);
-        eMarca.setText("");
-        eNombreProducto.setText("");
-        ePrecioAntes.setText("");
-        ePrecioAhora.setText("");
-        eCantidad.setText("");
-        imagenProducto.setImageResource(R.drawable.ic_image_black_24dp);
-        Toast.makeText(AgregarPromocionActivity.this, "Promoción Agregada Exitosamente", Toast.LENGTH_SHORT).show();
+
+
+        DatabaseReference myRef2 = database.getReference("Tiendas").child(Celular).child("nombre");
+        final DatabaseReference myRef3 = database.getReference("TodasPromociones").child(eNombreProducto.getText().toString());
+        myRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String value = dataSnapshot.getValue(String.class);
+                promoGeneral=new PromoGeneral(foto.toString(),eMarca.getText().toString(), eNombreProducto.getText().toString(),ePrecioAhora.getText().toString(),
+                        ePrecioAntes.getText().toString(), eCantidad.getText().toString(), value);
+                myRef3.setValue(promoGeneral);
+
+                eMarca.setText("");
+                eNombreProducto.setText("");
+                ePrecioAntes.setText("");
+                ePrecioAhora.setText("");
+                eCantidad.setText("");
+                imagenProducto.setImageResource(R.drawable.ic_image_black_24dp);
+                Toast.makeText(AgregarPromocionActivity.this, "Promoción Agregada Exitosamente", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
+
+
+
+
+
+
 
     }
 

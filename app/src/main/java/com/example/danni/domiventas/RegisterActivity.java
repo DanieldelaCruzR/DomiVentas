@@ -2,10 +2,12 @@ package com.example.danni.domiventas;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,6 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        ActionBar ab =getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         eEmail=(EditText)findViewById(R.id.eEmail);
         ePassword=(EditText)findViewById(R.id.ePass);
@@ -68,5 +72,12 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean validarEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

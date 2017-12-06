@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     public void bRegister(View view) {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
-        finish();
+        //finish();
     }
 
     public void bLogin(View view) {

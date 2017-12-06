@@ -24,7 +24,7 @@ public class TabsFragment extends Fragment {
         View contenedor= (View)container.getParent();
         appBar = (AppBarLayout)contenedor.findViewById(R.id.appbar);
         tabs= new TabLayout(getActivity());
-        tabs.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
+        tabs.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#FF9800"));
         appBar.addView(tabs);
 
         ViewPager=(android.support.v4.view.ViewPager)view.findViewById(R.id.pagerTabs);

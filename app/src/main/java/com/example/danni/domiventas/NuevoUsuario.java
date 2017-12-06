@@ -9,6 +9,9 @@ public class NuevoUsuario {
     private String email, nombre, propietario, direccion,foto;
     private String celular, tipo, costoEnvio, pedidoMin, tiempoEnvio;
 
+    public NuevoUsuario() {
+    }
+
     public NuevoUsuario(String email, String nombre, String propietario, String direccion, String foto, String celular, String tipo, String costoEnvio, String pedidoMin, String tiempoEnvio) {
         this.email = email;
         this.nombre = nombre;

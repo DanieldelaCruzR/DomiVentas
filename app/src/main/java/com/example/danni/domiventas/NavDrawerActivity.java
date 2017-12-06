@@ -13,19 +13,35 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static java.security.AccessController.getContext;
 
 public class NavDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String RegMail, RegPass,RegUsername, RegFoto,monitor;
-    private TextView NDname, NDemail;
-    private ImageView NDfoto;
+    private String RegMail, RegPass,RegUsername, RegFoto,monitor,Celular;
+    private TextView NDname, NDcelular;
+    private CircleImageView NDfoto;
+    private NuevoUsuario infoUsuario;
+    private StorageReference storageReferenceMain;
 
 
     @Override
@@ -43,12 +59,9 @@ public class NavDrawerActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.contenedorMain,new TabsFragment()).commit();
-
-        /*
+         /*
         * PONER ALGO QUE TOME EL NUMERO DE CELULAR CUANDO SE HA INICIADO SESION PARA SABER QUIEN HABLA
         *
         * */
@@ -57,16 +70,72 @@ public class NavDrawerActivity extends AppCompatActivity
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            String Celular = user.getDisplayName();
+            Celular = user.getDisplayName();
             editorSP.putString("Celular",Celular);
             editorSP.commit();
             Toast.makeText(getApplicationContext(),Celular,Toast.LENGTH_SHORT).show();
+
+            //INFORMACION DE PERFIL EN EL NAVDRAWER
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("Tiendas").child(Celular);
+
+            infoUsuario=new NuevoUsuario();
+            NDfoto=(CircleImageView)headerView.findViewById(R.id.NDfoto);
+            NDname=(TextView)headerView.findViewById(R.id.NDname);
+            NDcelular=(TextView)headerView.findViewById(R.id.NDcelular);
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    infoUsuario=dataSnapshot.getValue(NuevoUsuario.class);
+
+                    NDname.setText(infoUsuario.getNombre());
+                    NDcelular.setText(infoUsuario.getCelular());
+
+                    storageReferenceMain = FirebaseStorage.getInstance().getReferenceFromUrl(infoUsuario.getFoto());
+
+                    Glide.with(getApplicationContext())
+                            .using(new FirebaseImageLoader())
+                            .load(storageReferenceMain)
+                            .into(NDfoto);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
         else{
 
         }
 
 
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.contenedorMain,new TabsFragment()).commit();
+
+
+
+
+
+
+
+
+
+    }
+
+    private void cargarDatos(NuevoUsuario infoUsuario) {
+            NDname.setText(infoUsuario.getNombre());
+            NDcelular.setText(infoUsuario.getCelular());
+
+        storageReferenceMain = FirebaseStorage.getInstance().getReferenceFromUrl(infoUsuario.getFoto());
+
+        Glide.with(getApplicationContext())
+                .using(new FirebaseImageLoader())
+                .load(storageReferenceMain)
+                .into(NDfoto);
     }
 
     @Override
